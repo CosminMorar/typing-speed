@@ -2,7 +2,7 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100vh;
-  overflow: hidden; /* Hides scrollbars; remove if you want scroll functionality */
+  overflow: hidden;
 }
 
 body {
@@ -15,10 +15,36 @@ body {
   color: #D8BFD8;
 }
 
-.score-displayer p {
-  font-size: 1.25rem;
-  font-weight: bold;
+.score-displayer {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
+
+.score-displayer p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.instructions {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+}
+
+.timer {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  display: none;
+  margin-top: 10px;
+}
+
 
 .game-container {
   background-color: #f8f9fa;
@@ -32,6 +58,10 @@ body {
   min-height: 100px;
   background-color: #f1e7ff;
   border: 1px solid #8e44ad;
+}
+
+.words-displayer span {
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .words-input {
@@ -50,9 +80,13 @@ body {
 }
 
 .written-correct {
-  background-color: green;
+  background-color: #28a745;
+  color: #fff;
+  transform: scale(1.1);
 }
 
 .written-wrong {
-  background-color: red;
+  background-color: #dc3545;
+  color: #fff;
+  transform: scale(1.1);
 }
