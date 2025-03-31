@@ -48,3 +48,11 @@ body {
 .instructions {
   display: block;
 }
+
+.written-correct {
+  background-color: green;
+}
+
+.written-wrong {
+  background-color: red;
+}

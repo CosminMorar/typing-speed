@@ -1,5 +1,5 @@
 let checkWordListCompletionInterval, gameTick;
-let gameCurrentlyPlaying = false, unixEndTime, wordsCreated;
+let gameCurrentlyPlaying = false, unixEndTime, wordsCreated, characterCount;
 let userIndex;
 
 // Game setup
@@ -17,13 +17,22 @@ const RANDOM_WORD_API_KEY = 'oN55NsBq994xtCiI3xsuJw==9NjdaLDohOckJsZ2';
 window.addEventListener('keydown', onKeyDown);
 
 function onKeyDown(event) {
-  if (!gameCurrentlyPlaying && event.key == ' ') {
-    prepareGame();
-  } else {
-    let wordsDisplayer = document.getElementsByClassName('words-displayer')[0];
-    if (event.key == wordsDisplayer.innerHTML[userIndex]) {
-      ++userIndex;
+  // Check for game start
+  if (!gameCurrentlyPlaying) {
+    if (event.key == ' ') {
+      prepareGame();
     }
+    return;
+  }
+
+  // If the game is on, track characters introduced
+  let characterAtUserPos = document.getElementById(`character-${userIndex}`);
+  if (event.key == characterAtUserPos.innerHTML) {
+    characterAtUserPos.classList.remove('written-wrong');
+    characterAtUserPos.classList.add('written-correct');
+    ++userIndex;
+  } else {
+    characterAtUserPos.classList.add('written-wrong');
   }
 }
 
@@ -36,15 +45,15 @@ function setTimer() {
   if (!gameCurrentlyPlaying) {
     // Update the progress of the word list generation
     timerTime.innerHTML = `Get ready while words are generated! ${wordsCreated}/${WORDS_IN_LIST}`;
+    return;
+  }
+
+  // Update the remaining time
+  let timeRemaining = Math.ceil((unixEndTime - currentUnixTime()) / MILLISECONDS_IN_A_SECOND);
+  if (timeRemaining > 0) {
+    timerTime.innerHTML = timeRemaining;
   } else {
-    let timeRemaining = Math.ceil((unixEndTime - currentUnixTime()) / MILLISECONDS_IN_A_SECOND);
-    if (timeRemaining > 0) {
-      // Update the remaining time
-      timerTime.innerHTML = timeRemaining;
-    } else {
-      // End game
-      endGame();
-    }
+    endGame();
   }
 }
 
@@ -59,7 +68,10 @@ function addRandomWordToWordList() {
     .then(res => res.json())
     .then(data => {
       let wordsDisplayer = document.getElementsByClassName('words-displayer')[0];
-      wordsDisplayer.innerHTML += data.word[0].toLowerCase() + ' ';
+      let word = `${data.word[0].toLowerCase()} `;
+      for (let index = 0; index < word.length; ++index) {
+        wordsDisplayer.innerHTML += `<span id="character-${characterCount++}">${word[index]}</span>`
+      }
       ++wordsCreated;
     });
 }
@@ -114,6 +126,7 @@ function startGame() {
 function prepareGame() {
   // Create a list of random words and display them
   wordsCreated = 0;
+  characterCount = 0;
   createWordList();
 
   // Show the timer
