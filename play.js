@@ -1,12 +1,13 @@
 let checkWordListCompletionInterval, gameTick;
-let gameCurrentlyPlaying = false, unixEndTime, wordsCreated, characterCount;
-let userIndex;
+let gameCurrentlyPlaying = false, unixEndTime, wordsCreated, charactersCreated;
+let userIndex, wordsCompleted;
 
 // Game setup
 const SECONDS_IN_A_GAME = 10;
 const WORDS_IN_LIST = 4;
 
 // Timing variables
+const SECONDS_IN_A_MINUTE = 60;
 const MILLISECONDS_IN_A_SECOND = 1000;
 const MILLISECONDS_IN_A_MINUTE = SECONDS_IN_A_GAME * MILLISECONDS_IN_A_SECOND;
 
@@ -31,6 +32,12 @@ function onKeyDown(event) {
     characterAtUserPos.classList.remove('written-wrong');
     characterAtUserPos.classList.add('written-correct');
     ++userIndex;
+
+    // Check if user finished writing a word (current character will be a space)
+    let newCharacterAtUserPos = document.getElementById(`character-${userIndex}`)
+    if (newCharacterAtUserPos.innerHTML == ' ') {
+      ++wordsCompleted;
+    }
   } else {
     characterAtUserPos.classList.add('written-wrong');
   }
@@ -70,7 +77,7 @@ function addRandomWordToWordList() {
       let wordsDisplayer = document.getElementsByClassName('words-displayer')[0];
       let word = `${data.word[0].toLowerCase()} `;
       for (let index = 0; index < word.length; ++index) {
-        wordsDisplayer.innerHTML += `<span id="character-${characterCount++}">${word[index]}</span>`
+        wordsDisplayer.innerHTML += `<span id="character-${charactersCreated++}">${word[index]}</span>`
       }
       ++wordsCreated;
     });
@@ -107,10 +114,16 @@ function endGame() {
   // Show the instructions
   let instructions = document.getElementsByClassName('instructions')[0];
   instructions.style.display = 'block';
-}
 
-function updateGame() {
-  setTimer();
+  // Calculate & display the score (words/minute)
+  let score = document.getElementById('score');
+  score.innerHTML = wordsCompleted * SECONDS_IN_A_MINUTE / SECONDS_IN_A_GAME;
+
+  // Check if user made a high score (words/minute)
+  let highScore = document.getElementById('high-score');
+  if (parseInt(score.innerHTML) > parseInt(highScore.innerHTML)) {
+    highScore.innerHTML = score.innerHTML;
+  }
 }
 
 function startGame() {
@@ -120,13 +133,14 @@ function startGame() {
   userIndex = 0;
 
   // Start the main game loop
-  gameTick = window.setInterval(updateGame, 1);
+  gameTick = window.setInterval(setTimer, 1);
 }
 
 function prepareGame() {
   // Create a list of random words and display them
   wordsCreated = 0;
-  characterCount = 0;
+  charactersCreated = 0;
+  wordsCompleted = 0;
   createWordList();
 
   // Show the timer
@@ -136,4 +150,8 @@ function prepareGame() {
   // Hide the instructions
   let instructions = document.getElementsByClassName('instructions')[0];
   instructions.style.display = 'none';
+
+  // Reset the current score
+  let score = document.getElementById('score');
+  score.innerHTML = 0;
 }
