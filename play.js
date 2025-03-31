@@ -1,9 +1,10 @@
-let gameCurrentlyPlaying = false, unixEndTime, wordList, wordsCreated;
 let checkWordListCompletionInterval, gameTick;
+let gameCurrentlyPlaying = false, unixEndTime, wordsCreated;
+let userIndex;
 
 // Game setup
 const SECONDS_IN_A_GAME = 10;
-const WORDS_IN_LIST = 10;
+const WORDS_IN_LIST = 4;
 
 // Timing variables
 const MILLISECONDS_IN_A_SECOND = 1000;
@@ -18,6 +19,11 @@ window.addEventListener('keydown', onKeyDown);
 function onKeyDown(event) {
   if (!gameCurrentlyPlaying && event.key == ' ') {
     prepareGame();
+  } else {
+    let wordsDisplayer = document.getElementsByClassName('words-displayer')[0];
+    if (event.key == wordsDisplayer.innerHTML[userIndex]) {
+      ++userIndex;
+    }
   }
 }
 
@@ -33,8 +39,10 @@ function setTimer() {
   } else {
     let timeRemaining = Math.ceil((unixEndTime - currentUnixTime()) / MILLISECONDS_IN_A_SECOND);
     if (timeRemaining > 0) {
+      // Update the remaining time
       timerTime.innerHTML = timeRemaining;
     } else {
+      // End game
       endGame();
     }
   }
@@ -58,6 +66,7 @@ function addRandomWordToWordList() {
 
 function startGameOnWordListCompletion() {
   if (wordsCreated == WORDS_IN_LIST) {
+    // Start the game
     clearInterval(checkWordListCompletionInterval);
     startGame();
   } else {
@@ -77,6 +86,7 @@ function createWordList() {
 
 function endGame() {
   gameCurrentlyPlaying = false;
+  clearInterval(gameTick);
 
   // Hide the timer
   let timer = document.getElementsByClassName('timer')[0];
@@ -95,6 +105,7 @@ function startGame() {
   // Initialize game variables
   gameCurrentlyPlaying = true;
   unixEndTime = currentUnixTime() + MILLISECONDS_IN_A_MINUTE;
+  userIndex = 0;
 
   // Start the main game loop
   gameTick = window.setInterval(updateGame, 1);
