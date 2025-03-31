@@ -1,12 +1,13 @@
 let checkWordListCompletionInterval, gameTick;
 let gameCurrentlyPlaying = false, unixEndTime, wordsCreated, charactersCreated;
-let userIndex, wordsCompleted;
+let userIndex, wordsCompleted, mistakesMade;
 
 // Game setup
-const SECONDS_IN_A_GAME = 10;
-const WORDS_IN_LIST = 4;
+const SECONDS_IN_A_GAME = 60;
+const WORDS_IN_LIST = 60;
 
 // Timing variables
+const HUNDRED = 100;
 const SECONDS_IN_A_MINUTE = 60;
 const MILLISECONDS_IN_A_SECOND = 1000;
 const MILLISECONDS_IN_A_MINUTE = SECONDS_IN_A_GAME * MILLISECONDS_IN_A_SECOND;
@@ -39,6 +40,9 @@ function onKeyDown(event) {
       ++wordsCompleted;
     }
   } else {
+    if (!characterAtUserPos.classList.contains('written-wrong')) {
+      ++mistakesMade;
+    }
     characterAtUserPos.classList.add('written-wrong');
   }
 }
@@ -124,6 +128,10 @@ function endGame() {
   if (parseInt(score.innerHTML) > parseInt(highScore.innerHTML)) {
     highScore.innerHTML = score.innerHTML;
   }
+
+  // Calculate & display the accuracy (% of correctly written characters)
+  let accuracy = document.getElementById('accuracy');
+  accuracy.innerHTML = Math.floor((userIndex + 1 - mistakesMade) * HUNDRED / (userIndex + 1));
 }
 
 function startGame() {
@@ -141,6 +149,7 @@ function prepareGame() {
   wordsCreated = 0;
   charactersCreated = 0;
   wordsCompleted = 0;
+  mistakesMade = 0;
   createWordList();
 
   // Show the timer
@@ -154,4 +163,8 @@ function prepareGame() {
   // Reset the current score
   let score = document.getElementById('score');
   score.innerHTML = 0;
+
+  // Reset the accuracy
+  let accuracy = document.getElementById('accuracy');
+  accuracy.innerHTML = 0;
 }
