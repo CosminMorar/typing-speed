@@ -1,0 +1,42 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden; /* Hides scrollbars; remove if you want scroll functionality */
+}
+
+body {
+  background: linear-gradient(135deg, #7F00FF, #E100FF);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #fff;
+}
+
+.purple-text {
+  color: #D8BFD8;
+}
+
+.score-displayer p {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.game-container {
+  background-color: #f8f9fa;
+  color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #8e44ad;
+}
+
+.words-displayer {
+  font-size: 1.1rem;
+  min-height: 100px;
+  background-color: #f1e7ff;
+  border: 1px solid #8e44ad;
+}
+
+.words-input {
+  font-size: 1.1rem;
+  height: 50px;
+  border: 2px solid #8e44ad;
+  border-radius: 5px;
+}
